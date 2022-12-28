@@ -33,32 +33,14 @@ defmodule Task1aSumOfSubsets do
              iex(2)> Task1aSumOfSubsets.valid_sum(matrix_of_sum)
              [21, 12, 12, 17, 22]
          """
-         
-         def valid_sum(matrix_of_sum) do
-		ocount = Enum.count(matrix_of_sum)
-		oloop(matrix_of_sum,ocount,0,[])
-         end
-	 def oloop(matrix,count,st,result) when st < count do
-	 list = Enum.at(matrix,st)
-		result = result ++ list
-		st = st + 1
-		oloop(matrix,count,st,result)
-	 end
-	 def oloop(matrix,count,st,result) when st == count do
-		icount = Enum.count(result)
-		iloop(result,icount,0,[])
-	 end
-	 def iloop(list,count,st,res) when st < count do
-		data = Enum.at(list,st)
-		if is_integer(data) == true do
-			iloop(list,count,st + 1,res ++ [data])
-		else
-			iloop(list,count,st + 1,res)
-		end
-	 end
-	 def iloop(list,count,st,result) when st == count do
-		result
-	 end
+#  Configuration of char list should be printed as list only
+#  Source https://stackoverflow.com/questions/30037914/elixir-lists-interpreted-as-char-lists
+   IEx.configure(inspect: [charlists: :as_lists])
+   def valid_sum(matrix_of_sum) do
+		matrix_of_sum |> List.flatten |>
+     Enum.filter(fn x -> if is_integer(x), do: x end)
+   end
+   # Please use h function name for detail in interactive shell.
          @doc """
          #Function name:
                 sum_of_one
@@ -86,18 +68,21 @@ defmodule Task1aSumOfSubsets do
 		combination(tail,num)
 	 end
 
-         def sum_of_one(array_of_digits, sum_val) when sum_val > 0 do
-		max_count = Enum.count(array_of_digits)
-		ones_loop(array_of_digits,1,max_count,sum_val,[])
-         end
-	 def ones_loop(array,st,en,sum,result) when st <= en do
+   def sum_of_one(array_of_digits, sum_val) when sum_val > 0 do
+	   max_count = Enum.count(array_of_digits)
+		 loop_1(array_of_digits,1,max_count,sum_val,[])
+   end
+	 def loop_1(array,st,en,sum,result) when st <= en do
 		result = result ++ Enum.filter(combination(array,st),&(if Enum.sum(&1) == sum, do: Enum.sum(&1)))
-		ones_loop(array,st+1,en,sum,result)
+		loop_1(array,st+1,en,sum,result)
 	 end
-	 def ones_loop(array,st,en,sum,result) when st > en do
+	 def loop_1(_array,st,en,_sum,result) when st > en do
 		result
 	 end
-	 def sum_of_one(array_of_digits, 0), do: []
+	 def sum_of_one(_array_of_digits, sum_val) when sum_val == 0 do
+     result = []
+     result
+   end
          @doc """
          #Function name:
                 sum_of_all
@@ -136,18 +121,18 @@ defmodule Task1aSumOfSubsets do
                22 => [[3, 4, 7, 5, 3], [3, 2, 7, 2, 5, 3]]
              }
          """
-         def sum_of_all(array_of_digits,matrix_of_sum) do
+   def sum_of_all(array_of_digits,matrix_of_sum) do
 		list_of_sum = valid_sum(matrix_of_sum)
-		final_loop(array_of_digits, list_of_sum, 0, Enum.count(list_of_sum), %{})
-         end
-	 
-	 def final_loop(array_of_digits,list_of_sum,st,en,result) when st < en do
+		loop_2(array_of_digits, list_of_sum, 0, Enum.count(list_of_sum), %{})
+   end
+
+	 def loop_2(array_of_digits,list_of_sum,st,en,result) when st < en do
 		list = sum_of_one(array_of_digits,Enum.at(list_of_sum,st))
 		IO.inspect array_of_digits
 		result = Map.merge(result,%{Enum.at(list_of_sum,st) => list})
-		final_loop(array_of_digits,list_of_sum,st+1,en,result)
+		loop_2(array_of_digits,list_of_sum,st+1,en,result)
 	 end
-	 def final_loop(array_of_digits,list_of_sum,st,en,result) when st == en do
+	 def loop_2(_array_of_digits,_list_of_sum,st,en,result) when st == en do
 		result
 	 end
-       end
+  end

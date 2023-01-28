@@ -1,0 +1,4 @@
+90 deg left rotation
+
+time = 0.5 sec
+speed = 40 % or 102 in dec

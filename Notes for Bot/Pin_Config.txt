@@ -1,0 +1,64 @@
+Face bot direction at proximetry side and make it front.
+
+There is H-bridge motor driver is connected in between of two dc motors (TB003A3 6612FNG),
+following are the control pin connection for the same :-
+
+**All Pins Are Connected In GPIO Mode**
+
+1.) Left_Motor Pin_Back_Side (Ain1) = 12
+2.) Left_Motor Pin_Front_Side (Ain2) = 13
+3.) Right_Motor Pin_Back_Side (Bin1)= 20
+4.) Right_Motor Pin_Front_Side (Bin2)= 21
+5.) Left_PWM control pin (PWM_A)= 6
+6.) Right_PWM control pin (PWM_B)= 26
+
+ IR_reciever = 17
+ Buzzer = 4
+
+Joystick on top module
+
+1.) Centre = 7
+2.) A = 8
+3.) B = 9
+4.) C = 10
+5.) D = 11
+
+
+IR sensor (proximetry)
+
+1.) Left = 19
+2.) Right = 16
+
+TR Sensor
+
+1.) Clock = 25
+2.) Address = 24
+3.) DataOut = 23
+4.) Button = 7
+5.) CS = 5
+
+Ultrasonic Sensor
+
+1.) TRIG = 22
+2.) ECHO = 27
+
+ Color Sensor = 18
+
+############################################
+~~~Pins Left~~~
+
+UART Tx = 14
+UART Rx = 15
+
+I2C SDA = 2
+I2C SCL = 3
+
+I2C = 0
+I2C = 1
+
+
+
+####Imporant####
+
+No gpio pin is used to turn on pi
+Pi is powered using two 5v supply and 1 ground pin

@@ -47,11 +47,22 @@ defmodule DispenserMechanism do
     Logger.add_backend(:console)
   end
 
+  @doc """
+  This function is used to drop RCMs in the deposition container
+  
+  ## Example:- 
+  
+  iex> DispenserMechanism.dispence(positive int) // say 2
+  iex> All RCMs Dispensed
+  
+  // message will display after droping 2 rcms in the box.
+  """
   def dispense(count) when count > 0 do
     drop(1)
     dispense(count - 1)
   end
   def dispense(count) when count ==0 do
+    Process.sleep(1000)
     IO.puts "All RCMs Dispensed"
   end
 end

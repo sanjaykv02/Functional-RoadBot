@@ -40,7 +40,7 @@ defmodule DispenserMechanism do
     #Logger.debug("Testing Servo Motor a ")
     Logger.remove_backend(:console)
     pid = ServoKit.init_standard_servo()
-    ServoKit.set_angle(pid, 0, 70)       # args(pid, channel, angle in degrees)
+    ServoKit.set_angle(pid, 0, 100)       # args(pid, channel, angle in degrees)
     Process.sleep(round(speed*1000))
     ServoKit.set_angle(pid, 0, 180)     # args(pid, channel, angle in degrees)
     Process.sleep(round(speed*1000))

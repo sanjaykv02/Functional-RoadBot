@@ -14,7 +14,6 @@ defmodule DispenserMechanism do
   Servo Motor Pin:-->0(I2C)
   
   """
-
   @motor_pin [mot: 0]
   @sensor_pins [echo: 27, trig: 22]
 
@@ -32,8 +31,23 @@ defmodule DispenserMechanism do
 
   """
 #------------------------------Ultrasonic--as--a--feedback---------------------------
+  def detector() do
+    #Ultrasonic Code Goes Here
+    configure_sensor(:echo)
+    configure_sensor(:trig)
+    support_for_detector()
+  end
+  defp support_for_detector do
+    
+  end
 
-
+  defp configure_sensor(pin) do
+    if pin == :echo do
+      Circuits.GPIO.open(pin, :input)
+    else 
+      Circuits.GPIO.open(pin, :output)
+    end
+  end
 
 #---------------------------------Servo--Control--------------------------------------
   defp drop(speed) do
@@ -53,6 +67,7 @@ defmodule DispenserMechanism do
   ## Example:- 
   
   iex> DispenserMechanism.dispence(positive int) // say 2
+
   iex> All RCMs Dispensed
   
   // message will display after droping 2 rcms in the box.

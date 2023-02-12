@@ -23,8 +23,8 @@ defmodule Line_Follower do
 
   @motion_list [forward:  [0, 1, 0, 1],
                 backward: [1, 0, 1, 0],
-                left:     [0, 1, 1, 0],
-                right:    [1, 0, 0, 1],
+                right:     [0, 1, 1, 0],
+                left:    [1, 0, 0, 1],
                 stop:     [0, 0, 0, 0]]
 
   @duty_cycle 100
@@ -41,7 +41,7 @@ defmodule Line_Follower do
 #   Logger.debug("Blowing Buzzer")
     buzzer_init()
     buzzer_control(:high)
-    Process.sleep(6000)
+    Process.sleep(1000)
     buzzer_control(:low)
   end
 
@@ -89,10 +89,10 @@ defmodule Line_Follower do
   Speed function is used to control speed of motor. Value can be vary from 0 to 100 
   """
   def speed(value) do
-    IO.puts("Forward with pwm value = #{round(value*2.55)}")
+#   IO.puts("Forward with pwm value = #{round(value*2.55)}")
     pwm(:left, value)
     pwm(:right, value)
-    Process.sleep(100)
+#   Process.sleep(100)
   end
 
   @doc """
@@ -119,7 +119,7 @@ defmodule Line_Follower do
   """
 
   def test_wlf_sensors do
-    Logger.debug("Testing white line sensors connected ")
+ #   Logger.debug("Testing white line sensors connected ")
     sensor_ref = Enum.map(@sensor_pins, fn {atom, pin_no} -> configure_sensor({atom, pin_no}) end)
     sensor_ref = Enum.map(sensor_ref, fn{_atom, ref_id} -> ref_id end)
     sensor_ref = Enum.zip(@ref_atoms, sensor_ref)
@@ -159,7 +159,7 @@ defmodule Line_Follower do
               end)
     Enum.each(0..5, fn n -> provide_clock(sensor_ref) end)
     Circuits.GPIO.write(sensor_ref[:cs], 1)
-    Process.sleep(250)
+#    Process.sleep(250)
     sensor_data
   end
 
@@ -219,81 +219,219 @@ defmodule Line_Follower do
   end
 #------------------------------Line-------Follower--------------------------------
 
-  def fw(sp, t) do
-    speed(sp)
-    motor_action(:forward)
-    :timer.sleep(t*1000)
-    stop
+#Rotate 90 deg left or right
+
+  def left_90 do
+    speed(50)
+    motor_action(:left)
+    Process.sleep(300)
+    motor_action :stop
   end
 
-  def bw(sp, t) do
+  def right_90 do
+    speed(50)
+    motor_action(:right)
+    Process.sleep(330)
+    motor_action :stop
+  end
+
+
+  def fw(sp) do
+    speed(sp)
+    motor_action(:forward)
+  end
+
+  def bw(sp) do
     speed(sp)
     motor_action(:backward)
-    :timer.sleep(t*1000)
-    stop
   end
+
 #Sharp Left
-  def left_pos do
-    speed(30)
-    motor_action(:left)
-  end
+#  def left_pos do
+#    speed(30)
+#    motor_action(:left)
+#  end
+
+
 #Sharp Right
-  def right_pos do
-    speed(30)
-    motor_action(:right)
-  end
+#  def right_pos do
+#    speed(30)
+#    motor_action(:right)
+#  end
 
   def stop, do:
     motor_action(:stop)
+
+
 #Sharp U-Turn
   def turn_around do
-    speed(30)
+    speed(50)
     motor_action(:left)
-    :timer.sleep(10)
+    Process.sleep(600)
     stop
   end
 
-
-  def my_func do
-    IO.inspect test_wlf_sensors
+  def block_1 do
     [sl,l,c,r,sr] = test_wlf_sensors
-    if sl < 920 and sr < 890 and c >= 930 and (r < 890 or l < 890) do
-      IO.puts "Forward"
-      motor_action :forward
+    IO.inspect test_wlf_sensors
+    #For Forward Movement
+    
+    if sl < 920 and sr < 920 and c > 940 and (r < 900 or l < 900) do
+       fw 50
+    else if l > 910 and sl < 930 and sr < 920 do
+       motor_action :left
+       speed 30
+       Process.sleep(10)
+       motor_action :forward
+       speed 40
+       motor_action :right
+       speed 40
+       Process.sleep(10)
+       motor_action :forward
+       speed 50
+    #end
+    else if r > 910 and sr < 920 and sl < 930 do
+       motor_action :right
+       speed 30
+       Process.sleep(10)
+       motor_action :forward
+       speed 50
+       motor_action :left
       speed 40
+       Process.sleep(10)
+       motor_action :forward
+       speed 50
+    #end
+#    if sl < 920 and sr > 930 and c < 930 do 
+ #      motor_action :right
+  #     speed 40
+   #    Process.sleep(100)
+    #   motor_action :forward
+     #  speed 40
+      # motor_action :left
+       #speed 40
+      # Process.sleep(100)
+       #motor_action :forward
+       #speed 30
+    # end
+#     if sl > 930 and sr < 920 and c < 930 do
+ #      motor_action :left
+  #     speed 40
+   #    Process.sleep(100)
+    #   motor_action :forward
+     #  speed 40
+      # motor_action :right
+       #speed 40
+       #Process.sleep(100)
+       #motor_action :forward
+       #speed 30
+   # end
     end
-    if sl < 920 and c >= 930 and r >= 910 and sr >= 910 do
-      IO.puts "Right"
-      right_pos
     end
-    if sl >= 940 and l >= 910 and c >= 930 and sr < 890 do
-      IO.puts "Left"
-      left_pos
-    end    
-    if (sl < 920 and l >= 910) or (sl >= 940 and l < 890) do
-      IO.puts "Adjust Right"
-      motor_action :left
-      speed 25
-      motor_action :forward
-      speed 40
     end
-    if (sr < 890 and r >= 910) or (sr >= 910 and r < 890) do
-      IO.puts "Adjust Left"
-      motor_action :right
-      speed 25
-      motor_action :forward
-      speed 40
+    if l>910 and r>910 and c>920 and (sl > 930 or sr > 930)do
+       stop
+    else
+       block_1
     end
-    if sr > 910 and r> 910 and c > 930 and l > 910 and sl > 940 do
-      IO.puts "Stop"
-      motor_action :stop
-    end
-    my_func
   end
+   def block_4, do: block_4(0)
+   def block_4(count) do
+     [sl,l,c,r,sr] = test_wlf_sensors
+     IO.inspect test_wlf_sensors
+
+     if sl < 920 and sr < 920 and c > 940 and (r < 900 or l < 900), do:
+       fw 50
+     if l > 910 and sl < 920 and sr < 920 do
+       motor_action :left
+       speed 30
+      # Process.sleep(100)
+       motor_action :forward
+       speed 50
+       #motor_action :right
+       #speed 30
+       #Process.sleep(100)
+       #motor_action :forward
+       #speed 30
+     #end
+    else if sl < 920 and sr > 930 and c < 930 do 
+       motor_action :right
+       speed 30
+   #    Process.sleep(100)
+       motor_action :forward
+       speed 50
+    #   motor_action :left
+     #  speed 40
+      # Process.sleep(100)
+       #motor_action :forward
+       #speed 30
+     #end
+   else if r > 910 and c > 940 and sr > 930 and count == 0 do
+       right_90
+       count = 1
+       block_4(1)
+    end
+    end
+    end
+    IO.inspect(count)
+    if l>910 and r>910 and c>920 and count == 1 do
+       stop
+    else
+       count = 0
+       block_4(0)
+    end
+   end
+#  def my_func do
+#    IO.inspect test_wlf_sensors
+#    [sl,l,c,r,sr] = test_wlf_sensors
+#    if sl < 920 and sr < 900 and c >= 930 and (r < 900 or l < 900) do
+#      IO.puts "Forward"
+#      motor_action :forward
+#      speed 35
+#    end
+#    if sl < 930 and c >= 930 and r >= 910 and sr >= 910 do
+#      IO.puts "Right"
+#      right_90
+#    end
+#    if sl >= 940 and l >= 910 and c >= 930 and sr < 900 do
+#      IO.puts "Left"
+#      left_90
+#   end    
+#    if (sl < 930 and l >= 910 ) or (sl >= 940 and l < 900) do
+#      IO.puts "Adjust Left"
+#      motor_action :left
+#      speed 27
+#      motor_action :forward
+#      speed 30
+#      motor_action :right
+#      speed 25
+#      motor_action :forward
+#      speed 30
+#    end
+#   if (sr < 900 and r >= 910) or (sr >= 910 and r < 900) do
+#      IO.puts "Adjust Right"
+#      motor_action :right
+#      speed 27
+#      motor_action :forward
+#      speed 30
+#      motor_action :left
+#      speed 25
+#      motor_action :forward
+#      speed 35
+#    end
+#    if sr > 910 and r> 910 and c > 930 and l > 910 and sl > 940 do
+#      IO.puts "Stop"
+#      motor_action :backward
+#      :timer.sleep 300
+#      motor_action :stop
+#    end 
+#   my_func
+#  end
+#
 
   def continue_test(val) when val > 0 do
     IO.inspect test_wlf_sensors
-    :timer.sleep(200)
+    Process.sleep(200)
     continue_test(val - 1)
   end
 
@@ -301,44 +439,15 @@ defmodule Line_Follower do
     :ok
   end
 
-  def test do
-    speed 30
-    motor_action :left
-    :timer.sleep 100
-    motor_action :forward
-    speed 40
-    :timer.sleep 2000
-    speed 0
-  end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#  def test do
+#    speed 30
+#    motor_action :left
+#    :timer.sleep 100
+#    motor_action :forward
+#    speed 40
+#    :timer.sleep 2000
+#    speed 0
+# end
 
 
 

@@ -1,0 +1,5 @@
+for line follower PID control 
+https://www.waveshare.com/wiki/Tracker_Sensor#Principle_of_line_tracking
+
+for image processing (Pothole location detection)
+https://youtu.be/qOXDoYUgNlU

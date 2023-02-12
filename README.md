@@ -30,3 +30,10 @@ This will reduce the hazardous road accident which are occurred due to potholes 
 ## Deposition Containers
 
 ![IMG_20230203_184002](https://user-images.githubusercontent.com/94587277/216612416-8c08edb1-c0b1-4343-aae3-675f2014541d.jpg)
+
+## Dispenser Mechanism
+
+
+<figure class="video_container">
+  <iframe src="https://www.youtube.com/embed/enMumwvLAug" frameborder="0" allowfullscreen="true"> </iframe>
+</figure>
